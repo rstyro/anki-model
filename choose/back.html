@@ -26,6 +26,7 @@
 <hr>
 <div id="performance"> 正确率：100%</div><br>
 <div class="analyze">解析:{{Analyze}}</div>
+<div id="listText"></div>
 {{/Analyze}}
 <script>
     var classify = document.getElementById("classify"),
@@ -42,25 +43,29 @@
     }else{
         result.innerHTML="很遗憾，回答错误";
     }
-    key.innerHTML = gData.correctanswer.toString();
+    key.innerHTML = gData.rsltanswer.sort().toString();
     yourkey.innerHTML = gData.clickedValues.toString();
     var percent=((gData.correct/gData.total)*100).toFixed(2)
     performance.innerHTML='本次做题数：'+gData.total+"&nbsp;正确数："+gData.correct+"&nbsp;正确率："+percent+"%"
     var liTags =document.getElementsByTagName("li");
     for(var i in liTags){
+        // 正确答案高亮显示
         if(liTags[i].nodeType == 1){
+            var liKey = liTags[i].getAttribute("id");
             if(liTags[i].getAttribute("class") == "optionTrue"){
-                liTags[i].classList.add("cloze");
+                if(gData.clickedValues.indexOf(liKey) == -1){
+                    liTags[i].classList.add("cloze_line");
+                }else{
+                    liTags[i].classList.add("cloze");
+                }
             }
-            // else{
-            //     liTags[i].classList.add("wrong");
-            // }
         }
     }
     var inputTags =document.getElementsByTagName("input");
     for(var k=0;k<gData.clickedValues.length;k++){
         var key = gData.clickedValues[k];
         var inputId = "input"+key;
+        // 选中已选的
         for(var i=0;i<inputTags.length;i++){
             if(inputTags[i].nodeType){
                 if(inputTags[i].getAttribute("id") == inputId){
@@ -71,14 +76,9 @@
         }
         // 选错的才有删除线
         for(var i=0;i<liTags.length;i++){
-            if(liTags[i].nodeType){
-                if(liTags[i].getAttribute("class") == "optionFalse" && liTags[i].getAttribute("id") == key) {
-                    liTags[i].classList.add("wrong");
-                    break;
-                }else if(liTags[i].getAttribute("class") == "optionTrue" && liTags[i].getAttribute("id") != key){
-                    liTags[i].classList.add("cloze_line");
-                    break;
-                }
+            if(liTags[i].getAttribute("class") == "optionFalse" && liTags[i].getAttribute("id") == key) {
+                liTags[i].classList.add("wrong");
+                break;
             }
         }
     }

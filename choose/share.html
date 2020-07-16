@@ -10,10 +10,10 @@
 
 .card{
     font-family:Arial;
-    font-size:26px;
+    font-size:22px;
     text-align:left;
-    color:#222;
-    background-color:#CCE8CF;
+    color:#fff;
+    background-color:#222;
 }
 <style>
     *{
@@ -79,7 +79,8 @@
             score: 0,
             sum: 0,
             list: '',
-            correctanswer: []
+            correctanswer: [],
+            rsltanswer: []
         }
     }
     var gData = window.gData;
@@ -100,23 +101,42 @@
             options = options.split(/(\n|\r\n)/g).filter(function(e) {
                 return "\n" !== e && "\r\n" !== e && "" !== e
             }) || [];
+        var indexs = [];// 存随机数的
+        gData.rsltanswer=[];//重置，此参数为乱序后的正确答案
+        gData.clickedValues=[];
         for(var key=0;key<options.length;key++){
+            var randomNum=getRandomNum(indexs,options.length);
             var li ='';
-            if(correctanswer.indexOf(String.fromCharCode(key + 65)) != -1){
-                li=getLiElement(options[key],String.fromCharCode(key + 65),"optionTrue")
+            if(correctanswer.indexOf(String.fromCharCode(randomNum + 65)) != -1){
+                gData.rsltanswer.push(String.fromCharCode(key + 65));
+                li=getLiElement(options[randomNum],String.fromCharCode(key + 65),"optionTrue")
             }else{
-                li=getLiElement(options[key],String.fromCharCode(key + 65),"optionFalse")
+                li=getLiElement(options[randomNum],String.fromCharCode(key + 65),"optionFalse")
             }
             optionList.appendChild(li);
         }
         gData.list=optionList.innerHTML;
         gData.total++;
-        gData.clickedValues=[];//下一题
     }
 
+    function getRandomNum(indexs,number) {
+        var num;
+        do {
+            num = Math.random() * number;
+            num = Math.floor(num);
+            if (indexs.join().indexOf(num.toString()) == -1) {
+                indexs.push(num);
+                break;
+            }
+        } while (true)
+        return num;
+    }
+
+    // 点击选项事件
     function choice(li){
         var key = li.getAttribute("id");
         var input = document.getElementById("input"+key);
+
         input.checked=!input.checked;
         let delIndex =gData.clickedValues.indexOf(key);
         if(delIndex != -1){
@@ -124,9 +144,9 @@
         }else{
             gData.clickedValues.push(key);
         }
-        gData.clickedValues=selectAnswer;
     }
 
+    // 创建li选项，key=第几个答案选项
     function getLiElement(value,key,liClass) {
         var liElement = document.createElement("li"),
             inputElement = document.createElement("input"),
