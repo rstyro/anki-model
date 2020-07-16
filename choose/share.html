@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>共享格式刷,中间部分</title>
+</head>
+<body>
+
+<!-- 内容-->
+
+<style>
+    .card {
+        font-family:Arial;
+        font-size:17px;
+        text-align:left;
+        color:white;
+        background-color:#272822;
+    }
+    div {
+        margin:5px
+        auto
+    }
+    .text {
+        color:#e6db74;
+        text-align:left;
+        font-size:18px;
+    }
+    .classify {
+        font-size:22px;
+    }
+    .remark {
+        margin-top:15px;
+        font-size:16px;
+        color:#eeeebb;
+        text-align:left;
+    }
+    .cloze {
+        font-weight:bold;
+        color:#a6e22e;
+    }
+    .wrong {
+        font-weight:400;
+        color:#f92672;
+        text-decoration:line-through;
+    }
+    .options {
+        list-style:upper-latin;
+    }
+    .options * {
+        cursor:pointer;
+    }
+    .options *:hover {
+        font-weight:bold;
+        color:#eeeebb;
+    }
+
+    .options input[name="options"] {
+        display:inline;
+    }
+    label{
+        font-size:16px;
+    }
+    .sformat{
+        display: inline-block;
+        margin-left: 100px;
+    }
+    /*定位正确率展示条*/
+    #performance {
+        text-align:center;
+        font-size:16px;
+        margin-top:0px;
+        color: #ee8a09;
+    }
+    .analyze{
+
+    }
+
+</style>
+<script>
+    if (!window.gData) {
+        window.gData = {
+            clickedValues: [],
+            total: 0,
+            correct: 0,
+            score: 0,
+            sum: 0,
+            list: '',
+            correctanswer: []
+        }
+    }
+    var gData = window.gData;
+    function initOptions() {
+        var optionList = document.getElementById("optionList"),
+            classify = document.getElementById("classify"),
+            options = document.getElementById("options"),
+            answer = document.getElementById("answer");
+        var correctanswer = answer.innerText.toUpperCase().match(/[A-Fa-f]/g);
+        correctanswer.length > 1 && (classify.innerText = "多选题：");
+        gData.correctanswer=correctanswer;
+        options = options.innerHTML,
+            options = options.replace(/<\/?div>/g, "\n"),
+            options = options.replace(/\n+/g, "\n"),
+            options = options.replace(/<br.*?>/g, "\n"),
+            options = options.replace(/^\n/, ""),
+            options = options.replace(/\n$/, ""),
+            options = options.split(/(\n|\r\n)/g).filter(function(e) {
+                return "\n" !== e && "\r\n" !== e && "" !== e
+            }) || [];
+        for(var key=0;key<options.length;key++){
+            var li ='';
+            if(correctanswer.indexOf(String.fromCharCode(key + 65)) != -1){
+                li=getLiElement(options[key],String.fromCharCode(key + 65),"optionTrue")
+            }else{
+                li=getLiElement(options[key],String.fromCharCode(key + 65),"optionFalse")
+            }
+            optionList.appendChild(li);
+        }
+        gData.list=optionList.innerHTML;
+        gData.total++;
+        gData.clickedValues=[];//下一题
+    }
+
+    function choice(li){
+        var key = li.getAttribute("id");
+        var input = document.getElementById("input"+key);
+        input.checked=!input.checked;
+        // var selectAnswer = gData.clickedValues;
+        // if(selectAnswer.length == 0 || selectAnswer == null){
+        //     selectAnswer=new Array();
+        // }
+        // let delIndex = selectAnswer.indexOf(key);
+        // if(delIndex != -1){
+        //     selectAnswer.splice(delIndex,1);
+        // }else{
+        //     selectAnswer.push(key);
+        // }
+        let delIndex =gData.clickedValues.indexOf(key);
+        if(delIndex != -1){
+            gData.clickedValues.splice(delIndex,1);
+        }else{
+            gData.clickedValues.push(key);
+        }
+        gData.clickedValues=selectAnswer;
+    }
+
+    function getLiElement(value,key,liClass) {
+        var liElement = document.createElement("li"),
+            inputElement = document.createElement("input"),
+            labelElement = document.createElement("label");
+        inputElement.setAttribute("type", 1 === gData.correctanswer.length ? "radio": "checkbox");
+        inputElement.setAttribute("name", "options");
+        inputElement.setAttribute("id", "input"+key);
+        labelElement.innerHTML=value;
+        liElement.appendChild(inputElement);
+        liElement.appendChild(labelElement);
+        liElement.setAttribute("class", liClass);
+        liElement.setAttribute("id", key);
+        liElement.setAttribute("onclick", "choice(this)");
+        return liElement;
+    }
+    function checkAnswer(arr1,arr2) {
+        if(arr1.length != arr2.length)return false;
+        if(arr2.sort().toString() != arr1.sort().toString()) return false;
+        return true;
+    }
+</script>
+
+<!-- end -->
+
+
+</body>
+</html>

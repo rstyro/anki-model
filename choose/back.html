@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>背面</title>
+</head>
+<body>
+
+
+<!-- 内容-->
+
+
+<div id="classify" class="classify">单选题：</div>
+<div class="text">{{Question}}</div>
+{{#Options}}
+<ol class="options" id="optionList"></ol>
+<div id="options" style="display:none">{{Options}}</div>
+<div id="answer" style="display:none">{{text:Answer}}</div>
+<div>
+    <span id="result" class="cloze sformat"></span>
+    <span  class="cloze sformat">正确答案：<b style="color: #ee8a09"  id="key" ></b></span>
+    <span class="cloze sformat">你的答案：<b style="color: #ee8a09" id="yourkey"></b></span>
+</div>
+{{/Options}}
+{{#Analyze}}
+<hr>
+<div id="performance"> 正确率：100%</div><br>
+<div class="analyze">解析:{{Analyze}}</div>
+{{/Analyze}}
+<script>
+    var classify = document.getElementById("classify"),
+        performance = document.getElementById("performance"),
+        result = document.getElementById("result"),
+        key = document.getElementById("key"),
+        yourkey = document.getElementById("yourkey"),
+        optionOl = document.getElementById("optionList");
+    gData.correctanswer.length > 1 && (classify.innerText = "多选题：");
+    optionOl.innerHTML = gData.list;
+    if(checkAnswer(gData.clickedValues,gData.correctanswer)){
+        gData.correct++;
+        result.innerHTML="回答正确！！！";
+    }else{
+        result.innerHTML="很遗憾，回答错误";
+    }
+    key.innerHTML = gData.correctanswer.toString();
+    yourkey.innerHTML = gData.clickedValues.toString();
+    var percent=((gData.correct/gData.total)*100).toFixed(2)
+    performance.innerHTML='本次做题数：'+gData.total+"&nbsp;正确数："+gData.correct+"&nbsp;正确率："+percent+"%"
+    var liTags =document.getElementsByTagName("li");
+    for(var i in liTags){
+        if(liTags[i].nodeType == 1){
+            if(liTags[i].getAttribute("class") == "optionTrue"){
+                liTags[i].classList.add("cloze");
+            }else{
+                liTags[i].classList.add("wrong");
+            }
+        }
+    }
+
+</script>
+
+<!-- end-->
+
+
+</body>
+</html>

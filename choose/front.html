@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>正面代码</title>
+</head>
+<body>
+
+<!-- 内容-->
+<div id="classify" class="classify">单选题：</div>
+<div class="text">{{Question}}</div>
+{{#Options}}
+<ol id="optionList" class="options"></ol>
+<div id="options" style="display:none">{{Options}}</div>
+<div id="answer" style="display:none">{{text:Answer}}</div>
+{{/Options}}
+
+<script>
+    initOptions();
+</script>
+<!-- end-->
+
+
+</body>
+</html>
