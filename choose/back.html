@@ -18,8 +18,8 @@
 <div id="answer" style="display:none">{{text:Answer}}</div>
 <div>
     <span id="result" class="cloze sformat"></span>
-    <span  class="cloze sformat">正确答案：<b style="color: #ee8a09"  id="key" ></b></span>
-    <span class="cloze sformat">你的答案：<b style="color: #ee8a09" id="yourkey"></b></span>
+    <span  class="cloze sformat">正确答案：<b id="key" ></b></span>
+    <span class="cloze sformat">你的答案：<b id="yourkey"></b></span>
 </div>
 {{/Options}}
 {{#Analyze}}
@@ -56,7 +56,19 @@
             }
         }
     }
-
+    var inputTags =document.getElementsByTagName("input");
+    for(var k=0;k<gData.clickedValues.length;k++){
+        var key = gData.clickedValues[k];
+        var inputId = "input"+key;
+        for(var i=0;i<inputTags.length;i++){
+            if(inputTags[i].nodeType){
+                if(inputTags[i].getAttribute("id") == inputId){
+                    inputTags[i].checked=true;
+                    break;
+                }
+            }
+        }
+    }
 </script>
 
 <!-- end-->

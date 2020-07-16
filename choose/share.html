@@ -8,30 +8,23 @@
 
 <!-- 内容-->
 
+.card{
+    font-family:Arial;
+    font-size:26px;
+    text-align:left;
+    color:#222;
+    background-color:#CCE8CF;
+}
 <style>
-    .card {
-        font-family:Arial;
-        font-size:17px;
+    *{
         text-align:left;
-        color:white;
-        background-color:#272822;
     }
-    div {
-        margin:5px
-        auto
+    div{
+        margin:5px auto;
     }
-    .text {
-        color:#e6db74;
-        text-align:left;
-        font-size:18px;
+    .classify{
     }
-    .classify {
-        font-size:22px;
-    }
-    .remark {
-        margin-top:15px;
-        font-size:16px;
-        color:#eeeebb;
+    .text{
         text-align:left;
     }
     .cloze {
@@ -39,7 +32,7 @@
         color:#a6e22e;
     }
     .wrong {
-        font-weight:400;
+        font-weight:bold;
         color:#f92672;
         text-decoration:line-through;
     }
@@ -51,30 +44,25 @@
     }
     .options *:hover {
         font-weight:bold;
-        color:#eeeebb;
+        color: #a6e22e;
     }
 
     .options input[name="options"] {
         display:inline;
     }
-    label{
-        font-size:16px;
-    }
     .sformat{
         display: inline-block;
         margin-left: 100px;
     }
-    /*定位正确率展示条*/
     #performance {
         text-align:center;
-        font-size:16px;
-        margin-top:0px;
-        color: #ee8a09;
+        margin-top:10px;
     }
     .analyze{
-
+        margin-top:15px;
+        font-size:20px;
+        text-align:left;
     }
-
 </style>
 <script>
     if (!window.gData) {
@@ -124,16 +112,6 @@
         var key = li.getAttribute("id");
         var input = document.getElementById("input"+key);
         input.checked=!input.checked;
-        // var selectAnswer = gData.clickedValues;
-        // if(selectAnswer.length == 0 || selectAnswer == null){
-        //     selectAnswer=new Array();
-        // }
-        // let delIndex = selectAnswer.indexOf(key);
-        // if(delIndex != -1){
-        //     selectAnswer.splice(delIndex,1);
-        // }else{
-        //     selectAnswer.push(key);
-        // }
         let delIndex =gData.clickedValues.indexOf(key);
         if(delIndex != -1){
             gData.clickedValues.splice(delIndex,1);
