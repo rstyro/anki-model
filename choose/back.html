@@ -51,9 +51,10 @@
         if(liTags[i].nodeType == 1){
             if(liTags[i].getAttribute("class") == "optionTrue"){
                 liTags[i].classList.add("cloze");
-            }else{
-                liTags[i].classList.add("wrong");
             }
+            // else{
+            //     liTags[i].classList.add("wrong");
+            // }
         }
     }
     var inputTags =document.getElementsByTagName("input");
@@ -64,6 +65,18 @@
             if(inputTags[i].nodeType){
                 if(inputTags[i].getAttribute("id") == inputId){
                     inputTags[i].checked=true;
+                    break;
+                }
+            }
+        }
+        // 选错的才有删除线
+        for(var i=0;i<liTags.length;i++){
+            if(liTags[i].nodeType){
+                if(liTags[i].getAttribute("class") == "optionFalse" && liTags[i].getAttribute("id") == key) {
+                    liTags[i].classList.add("wrong");
+                    break;
+                }else if(liTags[i].getAttribute("class") == "optionTrue" && liTags[i].getAttribute("id") != key){
+                    liTags[i].classList.add("cloze_line");
                     break;
                 }
             }
