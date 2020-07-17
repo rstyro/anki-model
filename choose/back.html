@@ -37,7 +37,7 @@
         optionOl = document.getElementById("optionList");
     gData.correctanswer.length > 1 && (classify.innerText = "多选题：");
     optionOl.innerHTML = gData.list;
-    if(checkAnswer(gData.clickedValues,gData.correctanswer)){
+    if(checkAnswer(gData.clickedValues,gData.rsltanswer)){
         gData.correct++;
         result.innerHTML="回答正确！！！";
     }else{

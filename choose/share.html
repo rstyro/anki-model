@@ -136,12 +136,17 @@
     function choice(li){
         var key = li.getAttribute("id");
         var input = document.getElementById("input"+key);
-
+        var inputType = input.getAttribute("type");
         input.checked=!input.checked;
-        let delIndex =gData.clickedValues.indexOf(key);
-        if(delIndex != -1){
-            gData.clickedValues.splice(delIndex,1);
+        if("checkbox" == inputType){
+            let delIndex =gData.clickedValues.indexOf(key);
+            if(delIndex != -1){
+                gData.clickedValues.splice(delIndex,1);
+            }else{
+                gData.clickedValues.push(key);
+            }
         }else{
+            gData.clickedValues=[];
             gData.clickedValues.push(key);
         }
     }
