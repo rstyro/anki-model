@@ -46,41 +46,51 @@
         result.innerHTML="很遗憾，回答错误";
     }
     key.innerHTML = gData.rsltanswer.sort().toString();
-    yourkey.innerHTML = gData.clickedValues.toString();
-    var percent=((gData.correct/gData.total)*100).toFixed(2)
-    performance.innerHTML='本次做题数：'+gData.total+"&nbsp;正确数："+gData.correct+"&nbsp;正确率："+percent+"%"
-    var liTags =document.getElementsByTagName("li");
-    for(var i in liTags){
-        // 正确答案高亮显示
-        if(liTags[i].nodeType == 1){
-            var liKey = liTags[i].getAttribute("id");
-            if(liTags[i].getAttribute("class") == "optionTrue"){
-                if(gData.clickedValues.indexOf(liKey) == -1){
-                    liTags[i].classList.add("cloze_line");
-                }else{
-                    liTags[i].classList.add("cloze");
+    yourkey.innerHTML = gData.clickedValues.sort().toString();
+    performance.innerHTML='本次做题数：'+gData.total+"&nbsp;正确数："+gData.correct+"&nbsp;正确率："+getCorrectRate()+"%";
+    setHighlight();
+    setCheckboxStatus();
+
+
+
+    // 得到正确率
+    function getCorrectRate() {
+        return ((gData.correct/gData.total)*100).toFixed(2);
+    }
+
+    // 设置选中状态
+    function setCheckboxStatus() {
+        const inputTags =document.getElementsByTagName("input");
+        for (var i = 0; i < inputTags.length; i++) {
+            if (inputTags[i].nodeType) {
+                var inputId = inputTags[i].getAttribute("id");
+                inputId=inputId.replace("input","");
+                if (gData.clickedValues.indexOf(inputId) > -1) {
+                    inputTags[i].checked = true;
                 }
             }
         }
     }
-    var inputTags =document.getElementsByTagName("input");
-    for(var k=0;k<gData.clickedValues.length;k++){
-        var key = gData.clickedValues[k];
-        var inputId = "input"+key;
-        // 选中已选的
-        for(var i=0;i<inputTags.length;i++){
-            if(inputTags[i].nodeType){
-                if(inputTags[i].getAttribute("id") == inputId){
-                    inputTags[i].checked=true;
-                    break;
+
+    // 设置正确答案语错误答案 高亮
+    function setHighlight(){
+        var liTags =document.getElementsByTagName("li");
+        for(var i in liTags){
+            if(liTags[i].nodeType == 1){
+                var liKey = liTags[i].getAttribute("id");
+                // 正确答案高亮显示
+                if(liTags[i].getAttribute("class") == "optionTrue"){
+                    if(gData.clickedValues.indexOf(liKey) == -1){
+                        liTags[i].classList.add("cloze_line");
+                    }else{
+                        liTags[i].classList.add("cloze");
+                    }
+                }else{
+                    // 选错的加删除线
+                    if(gData.clickedValues.indexOf(liKey) != -1){
+                        liTags[i].classList.add("wrong");
+                    }
                 }
-            }
-        }
-        // 选错的才有删除线
-        for(var i=0;i<liTags.length;i++){
-            if(liTags[i].getAttribute("class") == "optionFalse" && liTags[i].getAttribute("id") == key) {
-                liTags[i].classList.add("wrong");
-                break;
             }
         }
     }
