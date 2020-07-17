@@ -41,6 +41,8 @@
         gData.correct++;
         result.innerHTML="回答正确！！！";
     }else{
+        yourkey.classList.add("wrong");
+        result.classList.add("wrong");
         result.innerHTML="很遗憾，回答错误";
     }
     key.innerHTML = gData.rsltanswer.sort().toString();

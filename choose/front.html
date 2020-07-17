@@ -14,10 +14,43 @@
 <div id="options" style="display:none">{{Options}}</div>
 <div id="answer" style="display:none">{{text:Answer}}</div>
 <div id="checkAns" ></div>
+<div id="countDown" ></div>
 {{/Options}}
-
+<style>
+    #countDown{
+        position: absolute;
+        top:50%;
+        left: 30%;
+        font-size: 25px;
+    }
+</style>
 <script>
     initOptions();
+    var endTime="2020/08/29 00:00:00";
+    countDown(endTime);
+    function countDown(endTime) {
+        var nowtime = new Date();
+        var endtime = new Date(endTime);
+        var lefttime = parseInt((endtime.getTime() - nowtime.getTime()) / 1000);
+        var d = parseInt(lefttime / (24*60*60))
+        var h = parseInt(lefttime / (60 * 60) % 24);
+        var m = parseInt(lefttime / 60 % 60);
+        var s = parseInt(lefttime % 60);
+        d = addZero(d)
+        h = addZero(h);
+        m = addZero(m);
+        s = addZero(s);
+        document.getElementById("countDown").innerHTML = `考试倒计时  ${d}天 ${h} 时 ${m} 分 ${s} 秒`;
+        //document.getElementById("countDown").innerHTML = `考试倒计时  ${d}天 `;
+        if (lefttime <= 0) {
+            document.getElementById("countDown").innerHTML = "考试已结束";
+            return;
+        }
+        setTimeout(function(){countDown(endTime)}, 1000);
+    }
+    function addZero(i) {
+        return i < 10 ? "0" + i: i + "";
+    }
 </script>
 <!-- end-->
 

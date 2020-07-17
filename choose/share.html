@@ -105,7 +105,8 @@
         gData.rsltanswer=[];//重置，此参数为乱序后的正确答案
         gData.clickedValues=[];
         for(var key=0;key<options.length;key++){
-            var randomNum=getRandomNum(indexs,options.length);
+            var randomNum=getRandomNum(indexs,options.length); //随机
+            // var randomNum=key; //不要随机了
             var li ='';
             if(correctanswer.indexOf(String.fromCharCode(randomNum + 65)) != -1){
                 gData.rsltanswer.push(String.fromCharCode(key + 65));
