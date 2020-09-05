@@ -7,7 +7,7 @@ Anki 模板
   - **.apkg** 就是Anki的模板文件了
 
 **怎么下载？**
-- 右上有一个 绿色Code 的按钮点击-选择Download ZIP 就可以下载了。
+- 右上有一个 绿色Code 的按钮点击-选择[Download ZIP](https://github.com/rstyro/anki-model/archive/master.zip) 就可以下载了。
 
 > Anki 网上找的模板基本都不太符合我的需求，所以自己改了下。
 > 喜欢的可以直接用我导出的模板，不喜欢的可以自己修改代码
