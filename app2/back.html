@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>背面</title>
+</head>
+<body>
+
+
+<!-- 内容-->
+
+
+<div id="classify" class="classify">单选题：</div>
+<div class="text">{{Question}}</div>
+{{#Options}}
+<ol class="options" id="optionList"></ol>
+<div id="options" style="display:none">{{Options}}</div>
+<div id="answer" style="display:none">{{text:Answer}}</div>
+<div>
+    <span id="result" class="cloze sformat"></span>
+    <span  class="cloze sformat">正确答案：<b id="key" ></b></span>
+    <span class="cloze sformat">你的答案：<b id="yourkey"></b></span>
+</div>
+{{/Options}}
+{{#Analyze}}
+<hr>
+<div id="performance"> 正确率：100%</div><br>
+<div class="analyze">解析:{{Analyze}}</div>
+<div id="listText"></div>
+{{/Analyze}}
+<script>
+
+    var gData=new Object();
+    if (Persistence.isAvailable()) {
+        // do stuff
+        gData = Persistence.getItem();
+        if (gData == null) {
+            gData = {
+                clickedValues: [],
+                total: 0,
+                correct: 0,
+                score: 0,
+                sum: 0,
+                list: '',
+                correctanswer: [],
+                rsltanswer: []
+            }
+            Persistence.setItem(gData);
+        }
+    }
+    var classify = document.getElementById("classify"),
+        performance = document.getElementById("performance"),
+        result = document.getElementById("result"),
+        key = document.getElementById("key"),
+        yourkey = document.getElementById("yourkey"),
+        optionOl = document.getElementById("optionList");
+    gData.correctanswer.length > 1 && (classify.innerText = "多选题：");
+    optionOl.innerHTML = gData.list;
+    if(checkAnswer(gData.clickedValues,gData.rsltanswer)){
+        gData.correct++;
+        result.innerHTML="回答正确！！！";
+        Persistence.setItem(gData);
+    }else{
+        yourkey.classList.add("wrong");
+        result.classList.add("wrong");
+        result.innerHTML="很遗憾，回答错误";
+    }
+    key.innerHTML = gData.rsltanswer.sort().toString();
+    yourkey.innerHTML = gData.clickedValues.sort().toString();
+    performance.innerHTML='本次做题数：'+gData.total+"&nbsp;正确数："+gData.correct+"&nbsp;正确率："+getCorrectRate()+"%";
+    setHighlight();
+    setCheckboxStatus();
+
+
+
+    // 得到正确率
+    function getCorrectRate() {
+        return ((gData.correct/gData.total)*100).toFixed(2);
+    }
+
+    // 设置选中状态
+    function setCheckboxStatus() {
+        const inputTags =document.getElementsByTagName("input");
+        for (var i = 0; i < inputTags.length; i++) {
+            if (inputTags[i].nodeType) {
+                var inputId = inputTags[i].getAttribute("id");
+                inputId=inputId.replace("input","");
+                if (gData.clickedValues.indexOf(inputId) > -1) {
+                    inputTags[i].checked = true;
+                }
+            }
+        }
+    }
+
+    // 设置正确答案语错误答案 高亮
+    function setHighlight(){
+        var liTags =document.getElementsByTagName("li");
+        for(var i in liTags){
+            if(liTags[i].nodeType == 1){
+                var liKey = liTags[i].getAttribute("id");
+                // 正确答案高亮显示
+                if(liTags[i].getAttribute("class") == "optionTrue"){
+                    if(gData.clickedValues.indexOf(liKey) == -1){
+                        liTags[i].classList.add("cloze_line");
+                    }else{
+                        liTags[i].classList.add("cloze");
+                    }
+                }else{
+                    // 选错的加删除线
+                    if(gData.clickedValues.indexOf(liKey) != -1){
+                        liTags[i].classList.add("wrong");
+                    }
+                }
+            }
+        }
+    }
+</script>
+
+<!-- end-->
+
+
+</body>
+</html>

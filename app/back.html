@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>背面</title>
+</head>
+<body>
+
+
+<!-- 内容-->
+
+
+<div id="backClassify" class="classify">单选题：</div>
+<div class="text">{{Question}}</div>
+{{#Options}}
+<ol id="optionList" class="options"></ol>
+<div id="backOptions" style="display:none">{{Options}}</div>
+<div id="answer" style="display:none">{{text:Answer}}</div>
+<div>
+    <span id="result" class="cloze sformat"></span>
+    <span  class="cloze sformat">正确答案：<b id="answerKey" ></b></span>
+    <span class="cloze sformat">你的答案：<b id="yourAnswerKey"></b></span>
+</div>
+{{/Options}}
+{{#Analyze}}
+<hr>
+<div id="performance"> 正确率：100%</div><br>
+<div class="analyze">解析:{{Analyze}}</div>
+<div id="listText"></div>
+{{/Analyze}}
+
+<script>
+
+    let gData=new Object();
+    if (Persistence.isAvailable()) {  // Check whether Persistence works on the client.
+        gData = Persistence.getItem();
+    }
+    showOption(gData.options,gData.answerArr);
+
+    // 正确答案的选项
+    let answerKey = document.getElementById("answerKey");
+    answerKey.innerHTML=gData.resultAnswerArr.sort().toString();
+
+    // 你选择的答案
+    let yourAnswerKey = document.getElementById("yourAnswerKey");
+    yourAnswerKey.innerHTML = gData.clickedValues.sort().toString();
+
+
+    setHighlight(gData.clickedValues);
+    setCheckboxStatus(gData.clickedValues);
+
+    function checkAnswer(arr1,arr2) {
+        if(arr1.length != arr2.length)return false;
+        if(arr2.sort().toString() != arr1.sort().toString()) return false;
+        return true;
+    }
+
+    // 设置选中状态
+    function setCheckboxStatus(yourAnswerArr) {
+        const inputTags =document.getElementsByTagName("input");
+        for (var i = 0; i < inputTags.length; i++) {
+            if (inputTags[i].nodeType) {
+                var inputId = inputTags[i].getAttribute("id");
+                inputId=inputId.replace("input","");
+                if (yourAnswerArr.indexOf(inputId) > -1) {
+                    inputTags[i].checked = true;
+                }
+            }
+        }
+    }
+
+    // 设置正确答案语错误答案 高亮
+    function setHighlight(yourAnswerArr){
+        var liTags =document.getElementsByTagName("li");
+        for(var i in liTags){
+            if(liTags[i].nodeType == 1){
+                var liKey = liTags[i].getAttribute("id");
+                // 正确答案高亮显示
+                if(liTags[i].getAttribute("class") == "optionTrue"){
+                    if(yourAnswerArr.indexOf(liKey) == -1){
+                        liTags[i].classList.add("cloze_line");
+                    }else{
+                        liTags[i].classList.add("cloze");
+                    }
+                }else{
+                    // 选错的加删除线
+                    if(yourAnswerArr.indexOf(liKey) != -1){
+                        liTags[i].classList.add("wrong");
+                    }
+                }
+            }
+        }
+    }
+</script>
+
+<!-- end-->
+
+
+</body>
+</html>

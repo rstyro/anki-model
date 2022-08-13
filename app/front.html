@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>正面代码</title>
+</head>
+<body>
+
+<!-- 内容-->
+<div id="f_classify" class="classify">单选题：</div>
+<div class="text">{{Question}}</div>
+{{#Options}}
+<ol id="optionList" class="options"></ol>
+<div id="options" style="display:none">{{Options}}</div>
+<div id="answer" style="display:none">{{text:Answer}}</div>
+<div id="checkAns"></div>
+{{/Options}}
+
+<script>
+
+    let gData;
+    if (Persistence.isAvailable()) {  // Check whether Persistence works on the client.
+        gData = Persistence.getItem();
+        if (gData == null) {
+            gData = {
+                clickedValues: [],  // 我们点击选中的选项
+                answerArr: [],   //答案选项
+                resultAnswerArr: [],    //正确选项,乱序时需要
+                options: [],    //所有选项
+                total: 0,
+                correct: 0,
+                score: 0,
+                sum: 0,
+            }
+            Persistence.setItem(gData);
+        }
+    }
+
+    initOptions();
+
+    /**
+     * 初始化选项
+     */
+    function initOptions(){
+        let options = getAllOptions();
+        // 所有答案
+        let answerArr = getAnswer();
+        // 正确答案
+        let resultAnswerArr =showOption(options,answerArr);
+        gData.answerArr=answerArr;
+        gData.resultAnswerArr=resultAnswerArr;
+        gData.options=options;
+        if (Persistence.isAvailable()) {
+            Persistence.setItem(gData);
+        }
+    }
+
+
+    /**
+     * 获取所有答案
+     * */
+    function getAnswer(){
+        // 获取答案
+        let answer = document.getElementById("answer");
+        let allAnswerArr = [];
+        if(answer !=null){
+            allAnswerArr = answer.innerText.toUpperCase().match(/[A-Fa-f]/g);
+        }
+        return allAnswerArr;
+    }
+
+    /**
+     * 获取选项
+     * */
+    function getAllOptions(){
+        let options = document.getElementById("options");
+        options = options.innerHTML,
+            options = options.replace(/<\/?div>/g, "\n"),
+            options = options.replace(/\n+/g, "\n"),
+            options = options.replace(/<br.*?>/g, "\n"),
+            options = options.replace(/^\n/, ""),
+            options = options.replace(/\n$/, ""),
+            options = options.split(/(\n|\r\n)/g).filter(function(e) {
+                return "\n" !== e && "\r\n" !== e && "" !== e
+            }) || [];
+        return options;
+    }
+
+</script>
+<!-- end-->
+
+
+</body>
+</html>

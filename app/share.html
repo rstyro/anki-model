@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>共享格式刷,中间部分</title>
+</head>
+<body>
+
+<!-- 内容-->
+
+.card{
+    font-family:Arial;
+    font-size:22px;
+    text-align:left;
+    color:#fff;
+    background-color:#222;
+}
+<style>
+    *{
+        text-align:left;
+    }
+    div{
+        margin:5px auto;
+    }
+
+    .text{
+        text-align:left;
+    }
+    .cloze {
+        font-weight:bold;
+        color:#a6e22e;
+
+    }
+    .cloze_line{
+        font-weight:bold;
+        color:#a6e22e;
+        text-decoration: underline;
+    }
+    .wrong {
+        font-weight:bold;
+        color:#f92672;
+        text-decoration:line-through;
+    }
+    .options {
+        list-style:upper-latin;
+    }
+    .options * {
+        cursor:pointer;
+    }
+    .options *:hover {
+        font-weight:bold;
+        color: #a6e22e;
+    }
+
+    .options input[name="options"] {
+        display:inline;
+    }
+    .sformat{
+        display: inline-block;
+        margin-left: 100px;
+    }
+    #performance {
+        text-align:center;
+        margin-top:10px;
+    }
+    .analyze{
+        margin-top:15px;
+        font-size:20px;
+        text-align:left;
+    }
+</style>
+<script>
+    // 引用Github开源的持久化工具,https://github.com/SimonLammer/anki-persistence
+    if(void 0===window.Persistence){let _persistenceKey="anki-persistence",_defaultKey="anki_gData";if(((window.Persistence_sessionStorage=function(){var e=!1;try{"object"==typeof window.sessionStorage&&((e=!0),(this.clear=function(){for(var e=0;e<sessionStorage.length;e++){var t=sessionStorage.key(e);0==t.indexOf(_persistenceKey)&&(sessionStorage.removeItem(t),e--)}}),(this.setItem=function(e,t){null==t&&((t=e),(e=_defaultKey)),sessionStorage.setItem(_persistenceKey+e,JSON.stringify(t))}),(this.getItem=function(e){return(null==e&&(e=_defaultKey),JSON.parse(sessionStorage.getItem(_persistenceKey+e)))}),(this.removeItem=function(e){null==e&&(e=_defaultKey),sessionStorage.removeItem(_persistenceKey+e)}))}catch(e){}this.isAvailable=function(){return e}}),(window.Persistence_windowKey=function(e){let t=window[e],n=!1;"object"==typeof t&&((n=!0),(this.clear=function(){t[_persistenceKey]={}}),(this.setItem=function(e,n){null==n&&((n=e),(e=_defaultKey)),(t[_persistenceKey][e]=n)}),(this.getItem=function(e){return(null==e&&(e=_defaultKey),null==t[_persistenceKey][e]?null:t[_persistenceKey][e])}),(this.removeItem=function(e){null==e&&(e=_defaultKey),delete t[_persistenceKey][e]}),null==t[_persistenceKey]&&this.clear()),(this.isAvailable=function(){return n})}),(window.Persistence=new Persistence_sessionStorage()),Persistence.isAvailable()||(window.Persistence=new Persistence_windowKey("py")),!Persistence.isAvailable())){let titleStartIndex=window.location.toString().indexOf("title"),titleContentIndex=window.location.toString().indexOf("main",titleStartIndex);titleStartIndex>0&&titleContentIndex>0&&titleContentIndex-titleStartIndex<10&&(window.Persistence=new Persistence_windowKey("qt"))}}
+</script>
+
+<script>
+    function showOption(options,answerArr){
+        let resultAnswerArr = [];
+        let optionList = document.getElementById("optionList");
+        for(let key=0;key<options.length;key++){
+            // var randomNum=getRandomNum(indexs,options.length); //随机
+            let randomNum=key; //不要随机了
+            let isTrue = false;
+            let optionKey = String.fromCharCode(randomNum + 65);
+            if(answerArr.indexOf(optionKey) != -1){
+                isTrue=true;
+                resultAnswerArr.push(optionKey);
+            }
+            let li =getLiElement(optionKey,options[randomNum],isTrue,answerArr.length === 1);
+            optionList.appendChild(li);
+        }
+        return resultAnswerArr;
+    }
+
+    /**
+     * 创建li选项，key=第几个答案选项
+     * @param value 答案选项
+     * @param key
+     * @param liClass
+     * @returns {HTMLLIElement}
+     */
+    function getLiElement(key,value,isTrue,isRadio) {
+        var liElement = document.createElement("li"),
+            inputElement = document.createElement("input"),
+            labelElement = document.createElement("label");
+        inputElement.setAttribute("type", isRadio ? "radio": "checkbox");
+        inputElement.setAttribute("name", "options");
+        inputElement.setAttribute("id", "input"+key);
+        labelElement.innerHTML=value;
+        liElement.appendChild(inputElement);
+        liElement.appendChild(labelElement);
+        liElement.setAttribute("class", isTrue?"optionTrue":"optionFalse");
+        liElement.setAttribute("id", key);
+        liElement.setAttribute("onclick", "choice(this)");
+        return liElement;
+    }
+
+
+    // 点击选项事件
+    function choice(li){
+        if (Persistence.isAvailable()) {
+            if (gData == null) {
+                gData = Persistence.getItem();
+            }
+        }
+        let key = li.getAttribute("id");
+        let input = document.getElementById("input"+key);
+        let inputType = input.getAttribute("type");
+        input.checked=!input.checked;
+        if("checkbox" == inputType){
+            let delIndex =gData.clickedValues.indexOf(key);
+            if(delIndex != -1){
+                gData.clickedValues.splice(delIndex,1);
+            }else{
+                gData.clickedValues.push(key);
+            }
+        }else{
+            gData.clickedValues=[];
+            gData.clickedValues.push(key);
+        }
+        if (Persistence.isAvailable()) {
+            Persistence.setItem(gData);
+        }
+    }
+</script>
+
+<!-- end -->
+
+
+</body>
+</html>
